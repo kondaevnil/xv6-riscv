@@ -13,6 +13,7 @@ main(int argc, char *argv[])
     uint64 a, b;
     uint len, cnt = 0;
     char *tmp = buf;
+    uint64 res, sys_res;
 
     gets(buf, BUF_SIZE);
     len = strlen(buf);
@@ -60,7 +61,10 @@ main(int argc, char *argv[])
         exit(0);
     }
 
-    printf("%l\n", a + b);
+    res = a + b;
+    sys_res = add(a, b);
+
+    printf("%d %c= %d\n", res, (res == sys_res) ? '=' : '!', sys_res);
 
     exit(0);
 }

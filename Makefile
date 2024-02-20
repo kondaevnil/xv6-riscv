@@ -18,6 +18,7 @@ OBJS = \
   $K/trap.o \
   $K/syscall.o \
   $K/sysproc.o \
+  $K/sysadd.o \
   $K/bio.o \
   $K/fs.o \
   $K/log.o \
@@ -134,6 +135,7 @@ UPROGS=\
 	$U/_zombie\
 	$U/_sum_gets\
 	$U/_sum_read\
+	$U/_test_add\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

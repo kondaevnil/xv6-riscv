@@ -8,7 +8,7 @@ char buf[NUM_LEN];
 int
 main(int argc, char *argv[])
 {
-    int a, b;
+    uint64 a, b;
     int i, cc;
     char c;
 
@@ -41,9 +41,8 @@ main(int argc, char *argv[])
         printf("Max number length was reached\n");
         exit(0);
     }
-    else
-        buf[i] = '\0';
 
+    buf[i] = '\0';
     a = atoi(buf);
 
     for (i = 0; i < NUM_LEN; i++)
@@ -72,11 +71,11 @@ main(int argc, char *argv[])
         printf("Max number length was reached\n");
         exit(0);
     }
-    else
-        buf[i] = '\0';
 
+    buf[i] = '\0';
     b = atoi(buf);
-    printf("%d\n", a + b);
+
+    printf("%l\n", a + b);
 
     exit(0);
 }

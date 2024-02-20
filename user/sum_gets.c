@@ -3,7 +3,7 @@
 #include "user/user.h"
 
 #define BUF_SIZE 23
-#define MAX_STR_LEN 24
+#define MAX_STR_LEN 22
 
 char buf[BUF_SIZE];
 
@@ -17,7 +17,7 @@ main(int argc, char *argv[])
     gets(buf, BUF_SIZE);
     len = strlen(buf);
 
-    if (len >= MAX_STR_LEN)
+    if (len > MAX_STR_LEN)
     {
         printf("Length limit\n");
         exit(0);

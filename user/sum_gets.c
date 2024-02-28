@@ -19,8 +19,8 @@ main(int argc, char *argv[])
 
     if (len > MAX_STR_LEN)
     {
-        printf("Length limit\n");
-        exit(0);
+        fprintf(2, "Length limit\n");
+        exit(-1);
     }
 
     a = atoi(tmp);
@@ -29,14 +29,14 @@ main(int argc, char *argv[])
 
     if (cnt > 10)
     {
-        printf("Wrong number length\n");
-        exit(0);
+        fprintf(2, "Wrong number length\n");
+        exit(-1);
     }
 
     if (*tmp != ' ')
     {
-        printf("No space between nums\n");
-        exit(0);
+        fprintf(2, "No space between nums\n");
+        exit(-1);
     }
     tmp++;
     cnt++;
@@ -47,8 +47,8 @@ main(int argc, char *argv[])
 
     if (cnt > 21)
     {
-        printf("Wrong number length\n");
-        exit(0);
+        fprintf(2, "Wrong number length\n");
+        exit(-1);
     }
 
     if (*tmp == '\n' || *tmp == '\r')
@@ -56,8 +56,8 @@ main(int argc, char *argv[])
 
     if (cnt != len)
     {
-        printf("Wrong string\n");
-        exit(0);
+        fprintf(2, "Wrong string\n");
+        exit(-1);
     }
 
     printf("%l\n", a + b);

@@ -18,16 +18,16 @@ main(int argc, char *argv[])
 
         if (cc < 1)
         {
-            printf("Error while reading\n");
-            exit(0);
+            fprintf(2, "Error while reading\n");
+            exit(-1);
         }
 
         if (!('0' <= c && c <= '9'))
         {
             if (c != ' ')
             {
-                printf("Invalid character between numbers: %c", c);
-                exit(0);
+                fprintf(2, "Invalid character between numbers: %c\n", c);
+                exit(-1);
             }
 
             break;
@@ -38,8 +38,8 @@ main(int argc, char *argv[])
 
     if (c != ' ')
     {
-        printf("Max number length was reached\n");
-        exit(0);
+        fprintf(2, "Max number length was reached\n");
+        exit(-1);
     }
 
     buf[i] = '\0';
@@ -56,8 +56,8 @@ main(int argc, char *argv[])
         {
             if (c != '\r' && c != '\n')
             {
-                printf("Invalid character between numbers: %c", c);
-                exit(0);
+                fprintf(2, "Invalid character between numbers: %c\n", c);
+                exit(-1);
             }
 
             break;
@@ -68,8 +68,8 @@ main(int argc, char *argv[])
 
     if (c != '\r' && c != '\n' && i == 11)
     {
-        printf("Max number length was reached\n");
-        exit(0);
+        fprintf(2, "Max number length was reached\n");
+        exit(-1);
     }
 
     buf[i] = '\0';

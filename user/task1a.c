@@ -22,4 +22,7 @@ main(int argc, char **argv)
         printf("child %d is done with %d status code\n", pid, status);
         exit(0);
     }
+
+    fprintf(2, "Error in child process creation\n");
+    exit(1);
 }

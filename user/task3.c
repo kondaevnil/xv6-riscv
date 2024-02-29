@@ -8,23 +8,22 @@ int
 main(int argc, char **argv)
 {
     int pid, status, i;
-    int p[2], cnt;
-    char buf[BUF_SIZE];
+    int p[2];
+    char *args[] = {"/wc", 0};
 
     pipe(p);
     pid = fork();
 
-    if (pid == 0)
+    if (pid > 0)
     {
-        close(p[1]);
-
-        while ((cnt = read(p[0], buf, BUF_SIZE)) > 0)
-            write(0, buf, cnt);
-
+        close(0);
+        dup(p[0]);
         close(p[0]);
+        close(p[1]);
+        exec("/wc", args);
         exit(0);
     }
-    else if (pid > 0)
+    else if (pid == 0)
     {
         close(p[0]);
         for (i = 0; i < argc; i++)

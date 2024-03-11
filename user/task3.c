@@ -10,6 +10,7 @@ main(int argc, char **argv)
     int pid, status, i;
     int p[2];
     char *args[] = {"/wc", 0};
+    int str_len;
 
     pipe(p);
     pid = fork();
@@ -20,7 +21,14 @@ main(int argc, char **argv)
         dup(p[0]);
         close(p[0]);
         close(p[1]);
-        exec("/wc", args);
+
+        int res = exec("/wc", args);
+        if (res == -1)
+        {
+            printf("exec error\n");
+            exit(1);
+        }
+
         exit(0);
     }
     else if (pid == 0)
@@ -28,8 +36,13 @@ main(int argc, char **argv)
         close(p[0]);
         for (i = 0; i < argc; i++)
         {
-            write(p[1], argv[i], strlen(argv[i]));
-            write(p[1], "\n", 1);
+            str_len = strlen(argv[i]);
+            if (write(p[1], argv[i], str_len) != str_len || write(p[1], "\n", 1) != 1)
+            {
+                printf("writing error\n");
+                close(p[1]);
+                exit(1);
+            }
         }
         close(p[1]);
         wait(&status);

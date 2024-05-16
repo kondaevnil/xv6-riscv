@@ -89,3 +89,39 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_vmprint(void)
+{
+    pagetable_t pagetable = myproc()->pagetable;
+    printf("page table %p\n", pagetable);
+    vmprint_req(pagetable, 1);
+
+    return 0;
+}
+
+uint64
+sys_pgaccess(void)
+{
+    uint64 va;
+    int size;
+
+    argaddr(0, &va);
+    argint(1, &size);
+
+    pagetable_t pg = myproc()->pagetable;
+    char *p = (char *)va;
+    int access = 0;
+
+    for (; p != (char *)va + size; p++) {
+        pte_t *pte = walk(pg, (uint64)p, 0);
+        access |= (*pte & PTE_A) != 0;
+    }
+
+    for (p = (char *)va; p != (char *)va + size; p++) {
+        pte_t *pte = walk(pg, (uint64)p, 0);
+        *pte = *pte & ~(PTE_A);
+    }
+
+    return access;
+}

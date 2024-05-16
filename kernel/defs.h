@@ -17,6 +17,11 @@ void            bwrite(struct buf*);
 void            bpin(struct buf*);
 void            bunpin(struct buf*);
 
+// buffer.c
+void            bufferinit(void);
+void            pr_msg(const char *fmt, ...);
+int             copy_buffer(char *buf, uint size);
+
 // console.c
 void            consoleinit(void);
 void            consoleintr(int);
@@ -173,6 +178,7 @@ uint64          walkaddr(pagetable_t, uint64);
 int             copyout(pagetable_t, uint64, char *, uint64);
 int             copyin(pagetable_t, char *, uint64, uint64);
 int             copyinstr(pagetable_t, char *, uint64, uint64);
+void            vmprint_req(pagetable_t, int);
 
 // plic.c
 void            plicinit(void);

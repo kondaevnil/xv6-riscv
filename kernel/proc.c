@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include <stddef.h>
 
 struct cpu cpus[NCPU];
 
@@ -48,6 +49,7 @@ void
 procinit(void)
 {
   struct proc *p;
+  int *mdesc;
   
   initlock(&pid_lock, "nextpid");
   initlock(&wait_lock, "wait_lock");
@@ -55,6 +57,9 @@ procinit(void)
       initlock(&p->lock, "proc");
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
+      for (mdesc = p->mdesc; mdesc < &p->mdesc[PMUTEX]; mdesc++) {
+          *mdesc = -1;
+      }
   }
 }
 
@@ -308,6 +313,13 @@ fork(void)
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
+  // copy mutex descriptors
+  for (i = 0; i < PMUTEX; i++) {
+      np->mdesc[i] = p->mdesc[i];
+      if (np->mdesc[i] != -1)
+          fork_mutex(np->mdesc[i]);
+  }
+
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
@@ -358,6 +370,13 @@ exit(int status)
       fileclose(f);
       p->ofile[fd] = 0;
     }
+  }
+
+  // free mutex descriptors
+  for (int i = 0; i < PMUTEX; i++) {
+      if (p->mdesc[i] > -1 && free_mutex(p->mdesc[i]) < 0)
+          panic("Incorrect mutex descriptor");
+      p->mdesc[i] = -1;
   }
 
   begin_op();

@@ -4,6 +4,7 @@
 #include "riscv.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "procinfo.h"
 #include "defs.h"
 
 struct cpu cpus[NCPU];
@@ -680,4 +681,52 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+int
+ps_listinfo(struct procinfo *plist, int lim)
+{
+    int pused = 0;
+    struct proc *p;
+    struct procinfo pi;
+
+    for (p = proc; p < &proc[NPROC]; p++) {
+        acquire(&p->lock);
+
+        if (p->state == UNUSED) {
+            release(&p->lock);
+            continue;
+        }
+
+        pused++;
+
+        if (plist == 0) {
+            release(&p->lock);
+            continue;
+        }
+
+        pi.state = p->state;
+
+        acquire(&wait_lock);
+        if (p->parent == 0) {
+            pi.ppid = -1;
+        } else {
+            pi.ppid = p->parent->pid;
+        }
+        release(&wait_lock);
+
+        strncpy(pi.name, p->name, strlen(p->name));
+
+        release(&p->lock);
+
+        if (pused > lim) {
+            return -1;
+        }
+
+        if (copyout(myproc()->pagetable, (uint64)(plist + (pused - 1)), (char *)&pi, sizeof(pi)) < 0) {
+            return -2;
+        }
+    }
+
+    return pused;
 }

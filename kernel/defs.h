@@ -9,6 +9,7 @@ struct sleeplock;
 struct stat;
 struct superblock;
 struct mutex;
+struct logger;
 
 // bio.c
 void            binit(void);
@@ -75,6 +76,12 @@ void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(void);
 void            end_op(void);
+
+// logger.c
+void            loginit(void);
+void            logsc(int, const char *, int);
+void            logusc(int, const char *, int);
+void            logex(int, const char *);
 
 // mutex.c
 void            mutexinit(void);

@@ -32,7 +32,8 @@ OBJS = \
   $K/mutex.o \
   $K/sysmutex.o \
   $K/buffer.o \
-  $K/sysmsg.o
+  $K/sysmsg.o \
+  $K/logger.o \
 
 
 
@@ -138,6 +139,9 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
+	$U/_dmesg\
+	$U/_test_no_mutex\
+    $U/_test_mutex\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

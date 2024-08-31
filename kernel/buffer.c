@@ -14,11 +14,11 @@ uint64 nxt(uint64 p) {
     return (p + 1) % BUFSIZE;
 }
 
-uint64 tlnxt() {
+uint64 tlnxt(void) {
     return (tail + 1) % BUFSIZE;
 }
 
-uint64 hdnxt() {
+uint64 hdnxt(void) {
     return (head + 1) % BUFSIZE;
 }
 
@@ -27,7 +27,7 @@ uint64 min(uint64 a, uint64 b) {
 }
 
 void
-bufinit()
+bufinit(void)
 {
     head = 0;
     msg_buf[head] = '\n';

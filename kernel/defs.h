@@ -17,6 +17,11 @@ void            bwrite(struct buf*);
 void            bpin(struct buf*);
 void            bunpin(struct buf*);
 
+// buffer.c
+void            bufinit(void);
+int             dmesg(char *, uint64);
+void            pr_msg(const char *, ...);
+
 // console.c
 void            consoleinit(void);
 void            consoleintr(int);

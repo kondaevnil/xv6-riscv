@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct mutex;
 
 // bio.c
 void            binit(void);
@@ -74,6 +75,15 @@ void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(void);
 void            end_op(void);
+
+// mutex.c
+void            mutexinit(void);
+void            fork_mutex(int);
+//int             exit_mutex(int);
+int             get_mutex(void);
+int             acquire_mutex(int);
+int             release_mutex(int);
+int             free_mutex(int);
 
 // pipe.c
 int             pipealloc(struct file**, struct file**);

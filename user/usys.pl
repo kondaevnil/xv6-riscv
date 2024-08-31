@@ -36,4 +36,8 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+entry("get_mutex");
+entry("acquire_mutex");
+entry("release_mutex");
+entry("free_mutex");
 entry("dmesg");

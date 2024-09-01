@@ -27,7 +27,7 @@ int acquire_mutex(int);
 int release_mutex(int);
 int free_mutex(int);
 int dmesg(char *, int);
-int logint(int, int, int);
+int logint(int, int);
 int logstart(int, int);
 
 // ulib.c

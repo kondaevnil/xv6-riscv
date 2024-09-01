@@ -22,12 +22,14 @@ uint64
 sys_logint(void)
 {
     int type;
-    int start;
     int t;
 
     argint(0, &type);
-    argint(1, &start);
-    argint(2, &t);
+    argint(1, &t);
 
-    return logint((enum logtype)type, start, t);
+    acquire(&tickslock);
+    uint tcks = ticks;
+    release(&tickslock);
+
+    return logint((enum logtype)type, tcks, t);
 }

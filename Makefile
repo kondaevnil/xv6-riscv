@@ -144,6 +144,8 @@ UPROGS=\
 	$U/_test_no_mutex\
     $U/_test_mutex\
     $U/_logger\
+    $U/_time_logger\
+
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

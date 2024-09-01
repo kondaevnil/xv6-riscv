@@ -106,6 +106,8 @@ extern uint64 sys_acquire_mutex(void);
 extern uint64 sys_release_mutex(void);
 extern uint64 sys_free_mutex(void);
 extern uint64 sys_dmesg(void);
+extern uint64 sys_logstart(void);
+extern uint64 sys_logint(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -135,7 +137,9 @@ static uint64 (*syscalls[])(void) = {
 [SYS_acquire_mutex] sys_acquire_mutex,
 [SYS_release_mutex] sys_release_mutex,
 [SYS_free_mutex]    sys_free_mutex,
-[SYS_dmesg]   sys_dmesg,
+[SYS_dmesg]    sys_dmesg,
+[SYS_logstart] sys_logstart,
+[SYS_logint]   sys_logint,
 };
 
 void

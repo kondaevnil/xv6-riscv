@@ -465,6 +465,11 @@ scheduler(void)
 {
   struct proc *p;
   struct cpu *c = mycpu();
+
+    int pid;
+    char *pname;
+    struct trapframe trapframe;
+    struct context context;
   
   c->proc = 0;
   for(;;){
@@ -474,6 +479,13 @@ scheduler(void)
     for(p = proc; p < &proc[NPROC]; p++) {
       acquire(&p->lock);
       if(p->state == RUNNABLE) {
+        pid = p->pid;
+        pname = p->name;
+        trapframe = *p->trapframe;
+        context = p->context;
+
+        logswch(pid, pname, trapframe, context);
+
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.

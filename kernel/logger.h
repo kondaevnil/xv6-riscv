@@ -1,3 +1,5 @@
+enum logtype {SYSCALL, SWITCHING, INTERRUPT, EXEC};
+
 struct interval {
     uint start, end;
     int inf;

@@ -180,6 +180,8 @@ uartintr(void)
     int c = uartgetc();
     if(c == -1)
       break;
+
+    loguart(UART0_IRQ, c);
     consoleintr(c);
   }
 

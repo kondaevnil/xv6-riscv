@@ -34,6 +34,7 @@ OBJS = \
   $K/buffer.o \
   $K/sysmsg.o \
   $K/logger.o \
+  $K/syslogger.o \
 
 
 
@@ -142,6 +143,7 @@ UPROGS=\
 	$U/_dmesg\
 	$U/_test_no_mutex\
     $U/_test_mutex\
+    $U/_logger\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

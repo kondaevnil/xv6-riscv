@@ -23,7 +23,7 @@ uint64 hdnxt(void) {
 }
 
 uint64 min(uint64 a, uint64 b) {
-    return a > b ? a : b;
+    return a < b ? a : b;
 }
 
 void
@@ -31,7 +31,7 @@ bufinit(void)
 {
     head = 0;
     msg_buf[head] = '\n';
-    tail++;
+    tail = 1;
     initlock(&buf_lck, "buffer lock");
 }
 
@@ -187,14 +187,14 @@ dmesg(char *dest, uint64 sz)
             sc = min(sz - fc, tail);
             if (copyout(pt, (uint64)dest, msg_buf, sc) != 0) {
                 release(&buf_lck);
-                return -3;
+                return -4;
             }
         }
     } else {
         fc = min(tail - head, fc);
         if (copyout(pt, (uint64)dest, msg_buf + head, fc) != 0) {
             release(&buf_lck);
-            return -3;
+            return -5;
         }
     }
 

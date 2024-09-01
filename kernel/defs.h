@@ -10,6 +10,8 @@ struct stat;
 struct superblock;
 struct mutex;
 struct logger;
+struct trapframe;
+enum logtype;
 
 // bio.c
 void            binit(void);
@@ -82,6 +84,12 @@ void            loginit(void);
 void            logsc(int, const char *, int);
 void            logusc(int, const char *, int);
 void            logex(int, const char *);
+void            logvirt(int);
+void            loguart(int, char);
+void            logswch(int, const char *, struct trapframe, struct context);
+int             logstart(enum logtype, int);
+int             logint(enum logtype, uint, uint);
+
 
 // mutex.c
 void            mutexinit(void);

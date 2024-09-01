@@ -16,7 +16,7 @@ main(int argc, char *argv[])
     int r = dmesg(buf, BUFSIZE);
 
     if (r < 0) {
-        fprintf(2, "Error occurred");
+        fprintf(2, "Error occurred %d\n", r);
         free(buf);
         exit(1);
     }

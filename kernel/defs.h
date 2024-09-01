@@ -8,6 +8,10 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct mutex;
+struct logger;
+struct trapframe;
+enum logtype;
 
 // bio.c
 void            binit(void);
@@ -16,6 +20,11 @@ void            brelse(struct buf*);
 void            bwrite(struct buf*);
 void            bpin(struct buf*);
 void            bunpin(struct buf*);
+
+// buffer.c
+void            bufinit(void);
+int             dmesg(char *, uint64);
+void            pr_msg(const char *, ...);
 
 // console.c
 void            consoleinit(void);
@@ -69,6 +78,27 @@ void            initlog(int, struct superblock*);
 void            log_write(struct buf*);
 void            begin_op(void);
 void            end_op(void);
+
+// logger.c
+void            loginit(void);
+void            logsc(int, const char *, int);
+void            logusc(int, const char *, int);
+void            logex(int, const char *);
+void            logvirt(int);
+void            loguart(int, char);
+void            logswch(int, const char *, struct trapframe, struct context);
+int             logstart(enum logtype, int);
+int             logint(enum logtype, uint, uint);
+
+
+// mutex.c
+void            mutexinit(void);
+void            fork_mutex(int);
+//int             exit_mutex(int);
+int             get_mutex(void);
+int             acquire_mutex(int);
+int             release_mutex(int);
+int             free_mutex(int);
 
 // pipe.c
 int             pipealloc(struct file**, struct file**);

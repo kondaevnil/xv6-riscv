@@ -11,3 +11,7 @@
 #define NBUF         (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE       2000  // size of file system in blocks
 #define MAXPATH      128   // maximum file path name
+#define NMUTEX       128   // maximum mutex count per system
+#define PMUTEX       32    // maximum mutex count per process
+#define BUFPGS       4
+#define BUFSIZE      (PGSIZE*BUFPGS)

@@ -23,7 +23,7 @@ uint64 hdnxt() {
 }
 
 uint64 min(uint64 a, uint64 b) {
-    return a > b ? a : b;
+    return a < b ? a : b;
 }
 
 void

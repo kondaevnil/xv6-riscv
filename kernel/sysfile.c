@@ -304,11 +304,13 @@ create(char *path, short type, short major, short minor)
 uint64
 sys_open(void)
 {
-  char path[MAXPATH];
+  char path[MAXPATH+1];
+  char dirname[DIRSIZ];
   int fd, omode;
   struct file *f;
-  struct inode *ip;
+  struct inode *ip, *ipp;
   int n;
+  int fwcnt = 0;
 
   argint(1, &omode);
   if((n = argstr(0, path, MAXPATH)) < 0)
@@ -327,12 +329,41 @@ sys_open(void)
       end_op();
       return -1;
     }
+
     ilock(ip);
-    if(ip->type == T_DIR && omode != O_RDONLY){
+    if(ip->type == T_DIR && (omode ^ (omode & O_NOFOLLOW)) != O_RDONLY){
       iunlockput(ip);
       end_op();
       return -1;
     }
+  }
+
+  if (ip->type == T_SYMLINK && !(omode & O_NOFOLLOW)) {
+      while (fwcnt < MAXFOLLOW && ip->type == T_SYMLINK) {
+          ipp = nameiparent(path, dirname);
+          if ((n = readi(ip, 0, (uint64)path, 0, MAXPATH)) < 0) {
+              iunlockput(ip);
+              end_op();
+              return -1;
+          }
+          iunlockput(ip);
+
+          path[n] = '\0';
+
+          if ((ip = namespec(ipp, path, 0, dirname)) == 0) {
+              end_op();
+              return -1;
+          }
+
+          fwcnt++;
+          ilock(ip);
+      }
+
+      if (fwcnt == MAXFOLLOW) {
+          iunlockput(ip);
+          end_op();
+          return -1;
+      }
   }
 
   if(ip->type == T_DEVICE && (ip->major < 0 || ip->major >= NDEV)){
@@ -384,6 +415,72 @@ sys_mkdir(void)
   iunlockput(ip);
   end_op();
   return 0;
+}
+
+uint64
+sys_symlink(void)
+{
+    char filename[MAXPATH];
+    char target[MAXPATH];
+    struct inode *ip;
+    int tlen;
+
+    begin_op();
+    if (argstr(0, target, MAXPATH) < 0 ||
+        (tlen = argstr(1, filename, MAXPATH)) < 0 ||
+        (ip = create(filename, T_SYMLINK, 0, 0)) == 0) {
+
+        end_op();
+        return -1;
+    }
+
+    if (writei(ip, 0, (uint64)target, 0, tlen) != tlen) {
+        iunlockput(ip);
+        end_op();
+        return -2;
+    }
+
+    iunlockput(ip);
+    end_op();
+
+    return 0;
+}
+
+uint64
+sys_readlink(void)
+{
+    char filename[MAXPATH];
+    uint64 buf;
+    int tlen;
+    struct inode *ip;
+
+    begin_op();
+
+    if (argstr(0, filename, MAXPATH) < 0 ||
+        (ip = namei(filename)) == 0) {
+        end_op();
+        return -1;
+    }
+
+    argaddr(1, &buf);
+    ilock(ip);
+
+    if (ip->type != T_SYMLINK) {
+        end_op();
+        iunlockput(ip);
+        return -2;
+    }
+
+    if ((tlen = readi(ip, 1, buf, 0, MAXPATH)) < 0) {
+        end_op();
+        iunlockput(ip);
+        return -3;
+    }
+
+    iunlockput(ip);
+    end_op();
+
+    return tlen;
 }
 
 uint64

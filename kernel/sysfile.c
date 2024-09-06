@@ -304,11 +304,11 @@ create(char *path, short type, short major, short minor)
 uint64
 sys_open(void)
 {
-  char path[MAXPATH], link[MAXPATH+1];
+  char path[MAXPATH+1];
   char dirname[DIRSIZ];
   int fd, omode;
   struct file *f;
-  struct inode *ip;
+  struct inode *ip, *ipp;
   int n;
   int fwcnt = 0;
 
@@ -340,17 +340,17 @@ sys_open(void)
 
   if (ip->type == T_SYMLINK && !(omode & O_NOFOLLOW)) {
       while (fwcnt < MAXFOLLOW && ip->type == T_SYMLINK) {
-          if ((n = readi(ip, 0, (uint64)link, 0, MAXPATH)) < 0) {
+          ipp = nameiparent(path, dirname);
+          if ((n = readi(ip, 0, (uint64)path, 0, MAXPATH)) < 0) {
               iunlockput(ip);
               end_op();
               return -1;
           }
           iunlockput(ip);
 
-          link[n] = '\0';
+          path[n] = '\0';
 
-          if ((ip = namespec(ip, link, 0, dirname)) == 0) {
-              iunlockput(ip);
+          if ((ip = namespec(ipp, path, 0, dirname)) == 0) {
               end_op();
               return -1;
           }

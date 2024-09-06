@@ -54,7 +54,7 @@ ls(char *path)
           fprintf(2, "ls: cannot read symlink %s\n", path);
       }
       target[len] = '\0';
-      printf("%s -> %s\n", path, target);
+      printf("%s -> %s\n", fmtname(path), target);
 
       break;
 
@@ -78,7 +78,7 @@ ls(char *path)
       }
       if (st.type == T_SYMLINK) {
           readlink(buf, target);
-          printf("%s -> %s\n", path, target);
+          printf("%s -> %s\n", fmtname(buf), target);
         }
       else
           printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);

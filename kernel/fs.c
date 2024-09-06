@@ -695,3 +695,38 @@ nameiparent(char *path, char *name)
 {
   return namex(path, 1, name);
 }
+
+struct inode*
+namespec(struct inode *ip, char *path, int nameiparent, char *name)
+{
+    struct inode *next;
+
+    if(*path == '/')
+        ip = iget(ROOTDEV, ROOTINO);
+    else
+        ip = idup(ip);
+
+    while((path = skipelem(path, name)) != 0){
+        ilock(ip);
+        if(ip->type != T_DIR){
+            iunlockput(ip);
+            return 0;
+        }
+        if(nameiparent && *path == '\0'){
+            // Stop one level early.
+            iunlock(ip);
+            return ip;
+        }
+        if((next = dirlookup(ip, name, 0)) == 0){
+            iunlockput(ip);
+            return 0;
+        }
+        iunlockput(ip);
+        ip = next;
+    }
+    if(nameiparent){
+        iput(ip);
+        return 0;
+    }
+    return ip;
+}
